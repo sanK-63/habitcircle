@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HabitCircle — социальный трекер привычек</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <button class="brand" data-nav="landing" aria-label="HabitCircle Главная"><span class="brand-name">HabitCircle</span></button>
+      <nav class="nav">
+        <button data-nav="landing">Главная</button>
+        <button data-nav="dashboard">Сегодня</button>
+        <button data-nav="challenges">Челленджи</button>
+        <button data-nav="friends">Друзья</button>
+        <button data-nav="stats">Статистика</button>
+      </nav>
+      <div class="row">
+        <button class="user-pill" data-nav="profile" title="Перейти в профиль"><span class="avatar" id="user-letter">А</span><span id="user-name">Анна</span></button>
+        <button class="primary" data-nav="dashboard">Открыть</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="landing" class="screen active">
+      <div class="wrap">
+        <div class="hero">
+          <div class="badge"><span class="dot"></span> Как Habitica и Streaks, но с друзьями в центре</div>
+          <h1>Привычки, серии<br><span>и общий рейтинг</span></h1>
+          <p class="lead">Чек-ины, календарь на 28 дней, XP, челленджи с таблицей лидеров и поддержка друзей. Всё сохраняется в браузере.</p>
+          <div class="cta-row">
+            <button class="primary" data-nav="dashboard">К сегодняшним привычкам</button>
+            <button class="ghost" data-action="reset">Сбросить демо</button>
+          </div>
+          <div class="stats" id="landing-stats"></div>
+        </div>
+        <div class="section grid-4">
+          <article class="card"><div class="icon">🔥</div><h3>Серии</h3><p class="muted">Streak не рвётся, если вчерашний день отмечен, как в Streaks.</p></article>
+          <article class="card"><div class="icon">🏆</div><h3>XP и уровень</h3><p class="muted">10 очков за чек-ин и 25 за челлендж — лёгкая геймификация Habitica.</p></article>
+          <article class="card"><div class="icon">📅</div><h3>Календарь</h3><p class="muted">Тепловая карта 4 недель и недельная цель по каждой привычке.</p></article>
+          <article class="card"><div class="icon">👥</div><h3>Круг</h3><p class="muted">Заявки, рейтинг друзей, поддержка и реакции в ленте.</p></article>
+        </div>
+        <div class="steps">
+          <div><div class="step-num">1</div><h3>Отметь день</h3><p class="muted">Галочка пишет дату и растит серию.</p></div>
+          <div><div class="step-num">2</div><h3>Войди в челлендж</h3><p class="muted">Появишься в таблице участников.</p></div>
+          <div><div class="step-num">3</div><h3>Поддержи друга</h3><p class="muted">Очки и событие попадут в ленту.</p></div>
+        </div>
+        <div class="banner" style="margin-top:28px">
+          <h2>Прототип MVP, не сервер</h2>
+          <p>Целевой стек презентации — React, NestJS и PostgreSQL. Здесь поведение интерфейса можно показать без сборки.</p>
+          <button class="primary" data-nav="stats">Смотреть статистику</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="dashboard" class="screen">
+      <div class="wrap">
+        <div class="page-head">
+          <div><h1 id="dash-hello">Привет</h1><p class="sub">Отметьте привычки на сегодня. Недельная цель — полоска под названием.</p></div>
+          <div class="kpis" id="dash-kpis"></div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <article class="card">
+              <div class="row" style="justify-content:space-between"><h2 style="margin:0">Привычки</h2><button class="primary" data-action="add">+ Добавить</button></div>
+              <div class="filters">
+                <button data-filter="all">Все</button>
+                <button data-filter="open">Не отмечены</button>
+                <button data-filter="done">Готово</button>
+                <button data-filter="health">Здоровье</button>
+              </div>
+              <div id="habit-list"></div>
+            </article>
+            <article class="card" style="margin-top:14px">
+              <h2 style="margin-top:0">7 дней</h2>
+              <div class="bars" id="week-bars"></div>
+            </article>
+          </div>
+          <div>
+            <article class="card">
+              <h2 style="margin-top:0">28 дней</h2>
+              <div class="heat" id="heat"></div>
+            </article>
+            <article class="card" style="margin-top:14px">
+              <h2 style="margin-top:0">Мои челленджи</h2>
+              <div id="dash-challenges"></div>
+              <button class="ghost" data-nav="challenges" style="margin-top:8px">Все челленджи</button>
+            </article>
+            <article class="card" style="margin-top:14px">
+              <h2 style="margin-top:0">Лента</h2>
+              <div id="dash-feed"></div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="challenges" class="screen">
+      <div class="wrap">
+        <div class="page-head"><div><h1>Челленджи</h1><p class="sub">У каждого есть короткий рейтинг, как в групповых привычках Habitica.</p></div></div>
+        <div class="grid-3" id="challenge-grid"></div>
+      </div>
+    </section>
+
+    <section id="friends" class="screen">
+      <div class="wrap">
+        <div class="page-head">
+          <div><h1>Друзья</h1><p class="sub" id="friend-count"></p></div>
+          <input id="friend-search" type="search" class="search" placeholder="Поиск по имени" />
+        </div>
+        <h2>Заявки</h2>
+        <div class="grid-2" id="pending-list"></div>
+        <h2 style="margin-top:20px">Рейтинг круга</h2>
+        <div class="grid-2" id="friend-list"></div>
+      </div>
+    </section>
+
+    <section id="stats" class="screen">
+      <div class="wrap">
+        <div class="page-head"><div><h1>Статистика</h1><p class="sub">Сводка как в Loop Habit Tracker: серии, неделя, месяц, категории.</p></div></div>
+        <div class="kpis" id="stats-kpis"></div>
+        <div class="grid-2" style="margin-top:16px">
+          <article class="card"><h2 style="margin-top:0">По привычкам</h2><div id="stats-table"></div></article>
+          <article class="card"><h2 style="margin-top:0">Категории за месяц</h2><div id="stats-cats"></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="profile" class="screen">
+      <div class="wrap">
+        <div class="page-head"><div><h1>Профиль</h1><p class="sub" id="profile-xp"></p></div></div>
+        
+        <div class="grid-2">
+          <div>
+            <article class="card">
+              <div class="profile-header-card">
+                <div class="avatar" id="profile-letter" style="width:64px;height:64px;font-size:26px">А</div>
+                <div style="flex:1">
+                  <h2 style="margin:0" id="profile-display-name">Анна</h2>
+                  <div class="muted" id="profile-display-sub">Уровень 1</div>
+                  <div class="progress" style="margin-top:8px"><div id="profile-xp-bar" style="width:0%"></div></div>
+                </div>
+              </div>
+
+              <form id="profile-form" class="form-grid" style="margin-top:16px">
+                <label>Имя <input id="profile-name" maxlength="32" required autocomplete="given-name" /></label>
+                <div class="row">
+                  <label style="flex:1">Аватар (Эмодзи) 
+                    <input id="profile-avatar" maxlength="2" placeholder="🌱" />
+                  </label>
+                  <label style="flex:1">Цвет фона
+                    <input id="profile-color" type="color" value="#2e7d4f" style="height:42px;padding:2px;cursor:pointer" />
+                  </label>
+                </div>
+                <label>Город <input id="profile-city" maxlength="32" autocomplete="address-level2" /></label>
+                <label>Главная цель <input id="profile-goal" maxlength="80" /></label>
+                <button class="primary" type="submit">Сохранить профиль</button>
+              </form>
+            </article>
+
+            <article class="card" style="margin-top:14px">
+              <h2 style="margin-top:0">Данные и Резервное копирование</h2>
+              <p class="muted" style="font-size:13px">Скачайте файл с вашим прогрессом или восстановите данные из ранее сохранённого JSON.</p>
+              <div class="row">
+                <button class="ghost" id="btn-export">📥 Экспорт JSON</button>
+                <button class="ghost" id="btn-import-trigger">📤 Импорт JSON</button>
+                <input type="file" id="file-import" accept=".json" style="display:none" />
+              </div>
+            </article>
+          </div>
+
+          <div>
+            <article class="card">
+              <h2 style="margin-top:0">Достижения</h2>
+              <div class="achievements-grid" id="profile-achievements"></div>
+            </article>
+
+            <article class="card" style="margin-top:14px">
+              <h2 style="margin-top:0">Архив привычек</h2>
+              <div id="profile-archive-list"></div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="mobile-nav">
+    <button data-nav="landing"><i>🏠</i><span>Главная</span></button>
+    <button data-nav="dashboard"><i>✅</i><span>Сегодня</span></button>
+    <button data-nav="challenges"><i>🏆</i><span>Челленджи</span></button>
+    <button data-nav="friends"><i>👥</i><span>Друзья</span></button>
+    <button data-nav="stats"><i>📊</i><span>Статистика</span></button>
+  </nav>
+
+  <footer class="footer"><div class="wrap"><span>HabitCircle · прототип с localStorage</span><span>Ориентиры: Streaks, Habitica, Loop</span></div></footer>
+
+  <div class="modal-back" id="modal">
+    <form class="modal" id="habit-form">
+      <h2 style="margin-top:0">Новая привычка</h2>
+      <div class="form-grid">
+        <label>Название <input id="habit-title" required maxlength="60" placeholder="Например, 20 страниц" /></label>
+        <label>Иконка
+          <select id="habit-icon"><option>📚</option><option>🏃</option><option>🧘</option><option>💧</option><option>🌙</option><option>✍️</option><option>🥗</option></select>
+        </label>
+        <label>Категория
+          <select id="habit-category"><option>Здоровье</option><option>Учёба</option><option>Фокус</option><option>Быт</option></select>
+        </label>
+        <label>Ритм
+          <select id="habit-cadence"><option>Каждый день</option><option>3 раза в неделю</option><option>По будням</option><option>По выходным</option></select>
+        </label>
+        <label>Цель на 7 дней
+          <select id="habit-target"><option value="7">7</option><option value="5">5</option><option value="3">3</option><option value="1">1</option></select>
+        </label>
+        <div class="row" style="margin-top:8px"><button class="primary" type="submit">Сохранить</button><button class="ghost" type="button" data-action="close">Отмена</button></div>
+      </div>
+    </form>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
