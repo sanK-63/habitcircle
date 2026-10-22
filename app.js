@@ -1,4 +1,5 @@
 const STORAGE_KEY = "habitcircle.v2";
+const THEME_KEY = "habitcircle_theme";
 
 export function todayISO(offset = 0) {
   const d = new Date();
@@ -128,6 +129,24 @@ function toast(message) {
   el.style.display = "block";
   clearTimeout(toast._t);
   toast._t = setTimeout(() => { el.style.display = "none"; }, 2200);
+}
+
+function initTheme() {
+  const savedTheme = localStorage.getItem(THEME_KEY);
+  if (savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    document.body.classList.add("dark-theme");
+    $("#theme-toggle").textContent = "☀️";
+  } else {
+    document.body.classList.remove("dark-theme");
+    $("#theme-toggle").textContent = "🌙";
+  }
+}
+
+function toggleTheme() {
+  const isDark = document.body.classList.toggle("dark-theme");
+  localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
+  $("#theme-toggle").textContent = isDark ? "☀️" : "🌙";
+  toast(isDark ? "Тёмная тема включена" : "Светлая тема включена");
 }
 
 function persist() { saveState(app.state); render(); }
@@ -282,7 +301,6 @@ function renderProfile() {
 
   $("#profile-xp").textContent = `${xp} XP · Уровень ${lvl}`;
 
-  // Рендер достижений
   const totalChecks = app.state.habits.reduce((s, h) => s + (h.dates?.length || 0), 0);
   const bestStreak = activeHabits().length ? Math.max(0, ...activeHabits().map((h) => streakOf(h.dates))) : 0;
   const friendsCount = app.state.friends.filter((f) => f.status === "friend").length;
@@ -303,7 +321,6 @@ function renderProfile() {
       </div>
     </div>`).join("");
 
-  // Рендер архива
   const archived = archivedHabits();
   $("#profile-archive-list").innerHTML = archived.length
     ? archived.map((h) => `
@@ -524,6 +541,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 document.addEventListener("click", onClick);
+$("#theme-toggle").addEventListener("click", toggleTheme);
 $("#habit-form").addEventListener("submit", addHabit);
 $("#profile-form").addEventListener("submit", saveProfile);
 $("#friend-search").addEventListener("input", (e) => { app.query = e.target.value; renderFriends(); });
@@ -532,5 +550,6 @@ $("#btn-export").addEventListener("click", exportJSON);
 $("#btn-import-trigger").addEventListener("click", () => $("#file-import").click());
 $("#file-import").addEventListener("change", importJSON);
 
+initTheme();
 render();
 show("landing");
